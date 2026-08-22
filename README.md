@@ -28,17 +28,19 @@ An enterprise-grade **Power BI Sales & Profitability Analytics Dashboard** and *
 
 ## 📄 Key Project Deliverables
 
-### 1. 📊 Corrected Power BI Report ([`global_sales_dashboard.pbix`](global_sales_dashboard.pbix))
+### 1. 📊 Enterprise Power BI Report ([`Global_Sales_Analytics_Dashboard.pbix`](Global_Sales_Analytics_Dashboard.pbix))
 - **Page 1: Executive Sales & Profit Overview**
-  - KPI Cards: Total Sales, Net Profit, Profit Margin %, and **Average Discount %** (fixing legacy mathematically invalid `Sum(Discount)`).
-  - Monthly Dual-Axis Revenue & Profit Trajectory Line Chart.
+  - KPI Cards: Total Sales, Net Profit, Total Quantity, and **Average Discount %** (fixing legacy invalid `Sum(Discount)`).
+  - Sub-Category Profitability Line & Clustered Column Combo Chart.
   - Donut Chart: Market Revenue Share (APAC, EU, US, LATAM, EMEA, Africa, Canada).
   - Donut Chart: Shipping Cost by Ship Mode (Standard, Second, First, Same Day).
-  - Cleaned Slicers for Fiscal Year, Market Hub, and Category.
+  - Clean Slicers for Fiscal Year, Market Hub, and Category.
 - **Page 2: Geographic & Shipping Performance**
-  - Sub-Category Sales & Profitability Spectrum.
-  - Top 10 Profitable vs. Bottom 10 Loss-Making Nations.
-  - Average Shipping Cost & Lead Time Progression by Ship Mode.
+  - Sub-Category Units Sold Spectrum Bar Chart.
+  - Country Average Shipping Cost & Lead Time Progression.
+  - Sales by Market Hub Bar Chart.
+  - Sales by Customer Segment (Consumer, Corporate, Home Office).
+  - Sales by Ship Mode.
 
 ### 2. 📑 Publication-Grade Executive PDF Report ([`Global_Sales_Executive_Report.pdf`](Global_Sales_Executive_Report.pdf))
 - 4-page high-resolution C-suite report with vector plots:
@@ -89,12 +91,12 @@ Discretionary discounting policies in several international markets created cata
 ## 📁 Clean Repository Structure
 
 ```text
-├── Global Superstore - Orders.csv     # Raw transactional dataset (51,290 rows)
-├── global_sales_dashboard.pbix        # Production Power BI Report file
-├── Global_Sales_Executive_Report.pdf  # 4-page Executive PDF Report with charts & strategy
-├── DAX_Measures.dax                   # Complete library of 25+ enterprise DAX measures
-├── README.md                          # Repository documentation & insights
-└── .gitignore                         # Standard git ignore rules
+├── Global Superstore - Orders.csv             # Raw transactional dataset (51,290 rows)
+├── Global_Sales_Analytics_Dashboard.pbix      # Production Power BI Report file
+├── Global_Sales_Executive_Report.pdf          # 4-page Executive PDF Report with charts & strategy
+├── DAX_Measures.dax                           # Complete library of 25+ enterprise DAX measures
+├── README.md                                  # Repository documentation & insights
+└── .gitignore                                 # Standard git ignore rules
 ```
 
 ---
