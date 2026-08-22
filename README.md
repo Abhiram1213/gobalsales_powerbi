@@ -95,8 +95,7 @@ Discretionary discounting policies in several international markets created cata
 ├── Global_Sales_Analytics_Dashboard.pbix      # Production Power BI Report file
 ├── Global_Sales_Executive_Report.pdf          # 4-page Executive PDF Report with charts & strategy
 ├── DAX_Measures.dax                           # Complete library of 25+ enterprise DAX measures
-├── README.md                                  # Repository documentation & insights
-└── .gitignore                                 # Standard git ignore rules
+└── README.md                                  # Repository documentation & insights
 ```
 
 ---
