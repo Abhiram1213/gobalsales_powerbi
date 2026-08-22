@@ -1,11 +1,11 @@
-# Global Superstore - Executive Power BI & Sales Analytics Suite
+# Global Superstore - Enterprise Power BI & Sales Analytics Suite
 
 [![Power BI](https://img.shields.io/badge/Power_BI-Desktop-F2C811?logo=powerbi&logoColor=black&style=for-the-badge)](https://powerbi.microsoft.com/)
 [![DAX](https://img.shields.io/badge/DAX-Measures_Library-0078D4?logo=microsoft&logoColor=white&style=for-the-badge)](DAX_Measures.dax)
 [![PDF Report](https://img.shields.io/badge/Executive_Report-PDF-E11D48?logo=adobeacrobatreader&logoColor=white&style=for-the-badge)](Global_Sales_Executive_Report.pdf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-An enterprise-grade **Power BI Sales & Profitability Analytics Dashboard** and **Executive PDF Report** built on the **Global Superstore** dataset (51,290 transactions across 147 countries, 4 fiscal years, and $12.64M in gross sales).
+An enterprise-grade **3-Page Power BI Analytics Suite** and **Executive PDF Report** built on the **Global Superstore** dataset (51,290 transactions across 147 countries, 4 fiscal years, and $12.64M in gross sales).
 
 ---
 
@@ -26,30 +26,34 @@ An enterprise-grade **Power BI Sales & Profitability Analytics Dashboard** and *
 
 ---
 
-## 📄 Key Project Deliverables
+## 📄 3-Page Power BI Architecture ([`Global_Sales_Analytics_Dashboard.pbix`](Global_Sales_Analytics_Dashboard.pbix))
 
-### 1. 📊 Enterprise Power BI Report ([`Global_Sales_Analytics_Dashboard.pbix`](Global_Sales_Analytics_Dashboard.pbix))
-- **Page 1: Executive Sales & Profit Overview**
-  - KPI Cards: Total Sales, Net Profit, Total Quantity, and **Average Discount %** (fixing legacy invalid `Sum(Discount)`).
-  - Sub-Category Profitability Line & Clustered Column Combo Chart.
-  - Donut Chart: Market Revenue Share (APAC, EU, US, LATAM, EMEA, Africa, Canada).
-  - Donut Chart: Shipping Cost by Ship Mode (Standard, Second, First, Same Day).
-  - Clean Slicers for Fiscal Year, Market Hub, and Category.
-- **Page 2: Geographic & Shipping Performance**
-  - Sub-Category Units Sold Spectrum Bar Chart.
-  - Country Average Shipping Cost & Lead Time Progression.
-  - Sales by Market Hub Bar Chart.
-  - Sales by Customer Segment (Consumer, Corporate, Home Office).
-  - Sales by Ship Mode.
+### 📌 Page 1: Executive Sales & Profit Overview
+- **KPI Ribbon:** Gross Sales ($12.64M), Net Profit ($1.47M), Total Units Sold (178.3K), and **Average Discount % (14.3%)**.
+- **Visuals:** Sub-Category Profitability Line & Clustered Column Combo Chart, Market Revenue Share Donut, Shipping Cost Share Donut, Sub-Category Sales Clustered Bar, Regional Financial Performance Matrix Table, and Country Profit Bar Chart.
+- **Slicers:** Fiscal Year, Market Hub, Product Category.
 
-### 2. 📑 Publication-Grade Executive PDF Report ([`Global_Sales_Executive_Report.pdf`](Global_Sales_Executive_Report.pdf))
+### 📌 Page 2: Geographic & Operational Performance
+- **Visuals:** Sub-Category Units Sold Spectrum Bar Chart, Country Average Shipping Cost & Lead Time Progression, Sales by Market Hub, Sales by Customer Segment (Consumer, Corporate, Home Office), and Sales by Fulfillment Ship Mode.
+- **Slicers:** Category, Country Slicer.
+
+### 📌 Page 3: Profit Leaks & Pricing Governance
+- **KPI Ribbon:** Profit Lost Impact ($521.4K), Shipping Cost Total ($1.35M), and Average Discount Rate.
+- **Visuals:** Sub-Category Profit Spectrum Bar (Highlighting -$64K Tables Deficit), Country Profit Deficit Bar Chart (Turkey -$98.4k, Nigeria -$80.8k, Netherlands -$41.1k), Category Margin Clustered Bar, and Sub-Category Financial Matrix Table.
+- **Slicers:** Fiscal Year, Market Hub, Category.
+
+---
+
+## 📑 Publication-Grade Executive PDF Report ([`Global_Sales_Executive_Report.pdf`](Global_Sales_Executive_Report.pdf))
 - 4-page high-resolution C-suite report with vector plots:
   - **Page 1:** Executive Scorecard, Monthly 4-Year Trend, and Macro YoY Table.
   - **Page 2:** Geographic Intelligence, Market Hub Rankings, and Country Deficit Breakdown.
   - **Page 3:** Profit Leak Diagnostic on the -$64k Tables loss and Discount % vs. Margin % Scatter Plot.
   - **Page 4:** Fulfillment Logistics Breakdown and 4 Strategic C-Suite Initiatives.
 
-### 3. 📐 Enterprise DAX Measures Library ([`DAX_Measures.dax`](DAX_Measures.dax))
+---
+
+## 📐 Enterprise DAX Measures Library ([`DAX_Measures.dax`](DAX_Measures.dax))
 Complete suite of 25+ production DAX formulas including:
 - **Core Financials:** `[Total Sales]`, `[Total Profit]`, `[Profit Margin %]`, `[Average Order Value (AOV)]`
 - **Time Intelligence:** `[Sales PY]`, `[Sales YoY Growth %]`, `[Profit PY]`, `[Profit YoY Growth %]`, `[Sales YTD]`
@@ -92,7 +96,7 @@ Discretionary discounting policies in several international markets created cata
 
 ```text
 ├── Global Superstore - Orders.csv             # Raw transactional dataset (51,290 rows)
-├── Global_Sales_Analytics_Dashboard.pbix      # Production Power BI Report file
+├── Global_Sales_Analytics_Dashboard.pbix      # 3-Page Enterprise Power BI Report file
 ├── Global_Sales_Executive_Report.pdf          # 4-page Executive PDF Report with charts & strategy
 ├── DAX_Measures.dax                           # Complete library of 25+ enterprise DAX measures
 └── README.md                                  # Repository documentation & insights
