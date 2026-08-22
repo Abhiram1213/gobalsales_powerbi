@@ -1,0 +1,285 @@
+/* ===============================================================================
+   GLOBAL SUPERSTORE - ENTERPRISE DAX MEASURES LIBRARY
+   ===============================================================================
+   Model Architecture: Star Schema (Fact_Orders, Dim_Date, Dim_Customer, 
+                                    Dim_Product, Dim_Geography)
+   Author: Senior Power BI & DAX Specialist
+   Standard: ISO DAX Formatting & Best Practices
+   =============================================================================== */
+
+-- ===============================================================================
+-- 1. CORE TRANSACTIONAL & SALES KPIS
+-- ===============================================================================
+
+[Total Sales] = 
+SUM(Fact_Orders[Sales])
+// Format: Currency ($#,##0)
+// Description: Aggregate gross revenue across all transactions
+
+[Total Quantity] = 
+SUM(Fact_Orders[Quantity])
+// Format: Whole Number (#,##0)
+// Description: Total units of items sold
+
+[Total Orders] = 
+DISTINCTCOUNT(Fact_Orders[Order ID])
+// Format: Whole Number (#,##0)
+// Description: Count of unique order transactions
+
+[Total Customers] = 
+DISTINCTCOUNT(Fact_Orders[Customer ID])
+// Format: Whole Number (#,##0)
+// Description: Count of unique active customers in the selected context
+
+[Average Order Value (AOV)] = 
+DIVIDE([Total Sales], [Total Orders], 0)
+// Format: Currency ($#,##0.00)
+// Description: Average gross transaction value per order
+
+[Average Units Per Order] = 
+DIVIDE([Total Quantity], [Total Orders], 0)
+// Format: Decimal Number (#,##0.0)
+// Description: Average basket size in units per order
+
+
+-- ===============================================================================
+-- 2. PROFITABILITY, MARGIN & COST ANALYSIS (Fixing Implicit Sum Errors)
+-- ===============================================================================
+
+[Total Profit] = 
+SUM(Fact_Orders[Profit])
+// Format: Currency ($#,##0)
+// Description: Total net bottom-line profit
+
+[Total Cost] = 
+SUM(Fact_Orders[Cost])
+// Format: Currency ($#,##0)
+// Description: Total cost of goods sold (COGS) [Sales - Profit]
+
+[Profit Margin %] = 
+DIVIDE([Total Profit], [Total Sales], 0)
+// Format: Percentage (0.00%)
+// Description: Net profit margin ratio as a percentage of gross sales
+
+[Total Shipping Cost] = 
+SUM(Fact_Orders[Shipping Cost])
+// Format: Currency ($#,##0)
+// Description: Total shipping and fulfillment expenditure
+
+[Shipping Cost % of Sales] = 
+DIVIDE([Total Shipping Cost], [Total Sales], 0)
+// Format: Percentage (0.00%)
+// Description: Logistics cost burden relative to sales revenue
+
+[Profit Per Unit] = 
+DIVIDE([Total Profit], [Total Quantity], 0)
+// Format: Currency ($#,##0.00)
+// Description: Average net margin earned per unit sold
+
+
+-- ===============================================================================
+-- 3. DISCOUNT & PROFIT LEAK DIAGNOSTIC MEASURES
+-- ===============================================================================
+
+[Average Discount %] = 
+AVERAGE(Fact_Orders[Discount])
+// Format: Percentage (0.0%)
+// Description: Correct calculation for average discount (replaces mathematically invalid SUM(Discount))
+
+[Weighted Average Discount %] = 
+DIVIDE(
+    SUMX(Fact_Orders, Fact_Orders[Sales] * Fact_Orders[Discount]),
+    [Total Sales],
+    0
+)
+// Format: Percentage (0.0%)
+// Description: Revenue-weighted discount percentage
+
+[Loss Making Orders Count] = 
+CALCULATE(
+    DISTINCTCOUNT(Fact_Orders[Order ID]),
+    Fact_Orders[Profit] < 0
+)
+// Format: Whole Number (#,##0)
+// Description: Count of orders resulting in negative bottom-line profit
+
+[Loss Making Orders %] = 
+DIVIDE([Loss Making Orders Count], [Total Orders], 0)
+// Format: Percentage (0.0%)
+// Description: Proportion of order volume operating at a deficit
+
+[Total Profit Lost ($)] = 
+CALCULATE(
+    ABS(SUM(Fact_Orders[Profit])),
+    Fact_Orders[Profit] < 0
+)
+// Format: Currency ($#,##0)
+// Description: Aggregate dollar value lost to negative-margin transactions
+
+
+-- ===============================================================================
+-- 4. TIME INTELLIGENCE & PERIOD-OVER-PERIOD COMPARISONS
+-- ===============================================================================
+
+[Sales PY (Prior Year)] = 
+CALCULATE(
+    [Total Sales],
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+// Format: Currency ($#,##0)
+// Description: Total sales for the exact corresponding period in the previous year
+
+[Sales YoY Growth $] = 
+[Total Sales] - [Sales PY (Prior Year)]
+// Format: Currency ($#,##0)
+// Description: Absolute dollar difference in sales year-over-year
+
+[Sales YoY Growth %] = 
+DIVIDE(
+    [Sales YoY Growth $],
+    [Sales PY (Prior Year)],
+    0
+)
+// Format: Percentage (+0.0%;-0.0%;0.0%)
+// Description: Percentage change in sales compared to prior year
+
+[Profit PY (Prior Year)] = 
+CALCULATE(
+    [Total Profit],
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+// Format: Currency ($#,##0)
+// Description: Total profit for the same period in previous year
+
+[Profit YoY Growth %] = 
+DIVIDE(
+    [Total Profit] - [Profit PY (Prior Year)],
+    [Profit PY (Prior Year)],
+    0
+)
+// Format: Percentage (+0.0%;-0.0%;0.0%)
+// Description: Percentage change in profit compared to prior year
+
+[Sales YTD (Year To Date)] = 
+TOTALYTD(
+    [Total Sales],
+    Dim_Date[Date]
+)
+// Format: Currency ($#,##0)
+// Description: Cumulative Year-To-Date sales
+
+[Profit YTD (Year To Date)] = 
+TOTALYTD(
+    [Total Profit],
+    Dim_Date[Date]
+)
+// Format: Currency ($#,##0)
+// Description: Cumulative Year-To-Date profit
+
+[Sales MoM Growth %] = 
+VAR CurrentMonthSales = [Total Sales]
+VAR PreviousMonthSales = 
+    CALCULATE(
+        [Total Sales],
+        PREVIOUSMONTH(Dim_Date[Date])
+    )
+RETURN
+    DIVIDE(CurrentMonthSales - PreviousMonthSales, PreviousMonthSales, 0)
+// Format: Percentage (+0.0%;-0.0%;0.0%)
+// Description: Month-over-Month sales velocity
+
+
+-- ===============================================================================
+-- 5. OPERATIONAL, FULFILLMENT & SHIPPING EFFICIENCY
+-- ===============================================================================
+
+[Average Shipping Duration (Days)] = 
+AVERAGE(Fact_Orders[Shipping Days])
+// Format: Decimal Number (#,##0.0)
+// Description: Average turnaround time between order placement and fulfillment
+
+[Standard Class Order Count] = 
+CALCULATE([Total Orders], Fact_Orders[Ship Mode] = "Standard Class")
+
+[Same Day Order Count] = 
+CALCULATE([Total Orders], Fact_Orders[Ship Mode] = "Same Day")
+
+[High Priority Orders] = 
+CALCULATE(
+    [Total Orders],
+    Fact_Orders[Order Priority] IN {"Critical", "High"}
+)
+
+
+-- ===============================================================================
+-- 6. DYNAMIC RANKING & PARETO METRICS
+-- ===============================================================================
+
+[Product Rank by Sales] = 
+IF(
+    ISINSCOPE(Dim_Product[Product_Name]),
+    RANKX(
+        ALLSELECTED(Dim_Product[Product_Name]),
+        [Total Sales],
+        ,
+        DESC,
+        Dense
+    )
+)
+// Description: Dynamic rank of product within filtered context
+
+[Country Rank by Profit] = 
+IF(
+    ISINSCOPE(Dim_Geography[Country]),
+    RANKX(
+        ALLSELECTED(Dim_Geography[Country]),
+        [Total Profit],
+        ,
+        DESC,
+        Dense
+    )
+)
+// Description: Dynamic rank of country by total bottom-line contribution
+
+[Top 10 Products Filter] = 
+IF([Product Rank by Sales] <= 10, 1, 0)
+// Description: Visual-level filter measure to keep bar charts readable and performant
+
+[Pareto Cumulative Sales %] = 
+VAR CurrentSales = [Total Sales]
+VAR AllSales = CALCULATE([Total Sales], ALLSELECTED(Dim_Product))
+VAR CumulativeSales = 
+    CALCULATE(
+        [Total Sales],
+        FILTER(
+            ALLSELECTED(Dim_Product),
+            [Total Sales] >= CurrentSales
+        )
+    )
+RETURN
+    DIVIDE(CumulativeSales, AllSales, 0)
+// Format: Percentage (0.0%)
+// Description: 80/20 Pareto cumulative revenue contribution curve
+
+
+-- ===============================================================================
+-- 7. CONDITIONAL FORMATTING & KPI STATUS HELPERS
+-- ===============================================================================
+
+[Profit Margin Status Color] = 
+SWITCH(
+    TRUE(),
+    [Profit Margin %] >= 0.15, "#10B981", // High Profit (Emerald Green)
+    [Profit Margin %] >= 0.05, "#F59E0B", // Moderate Profit (Amber)
+    [Profit Margin %] >= 0.00, "#3B82F6", // Low Profit (Blue)
+    "#EF4444"                             // Negative / Loss (Crimson Red)
+)
+// Description: Hex color code generator for dynamic table/matrix formatting
+
+[Sales YoY Indicator] = 
+IF(
+    [Sales YoY Growth %] >= 0,
+    "▲ +" & FORMAT([Sales YoY Growth %], "0.0%"),
+    "▼ " & FORMAT([Sales YoY Growth %], "0.0%")
+)
+// Description: Formatted text badge for KPI cards
